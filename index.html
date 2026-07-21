@@ -1,80 +1,96 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="Boîte à outils en ligne : PDF, images, texte, développeur, calculs, couleurs, SEO et plus. Gratuit, simple et rapide.">
-<title>OutilsBox — la boîte à outils en ligne</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./Css/styles.css">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3952975727989882"
-     crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Boîte à outils en ligne : PDF, images, texte, développeur, calculs, couleurs, SEO et plus. Gratuit, simple et rapide.">
+    <title>OutilsBox — la boîte à outils en ligne</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/styles.css">
+
+    <!-- === EZOIC - SCRIPTS OBLIGATOIRES (à garder en haut) === -->
+    <!-- Privacy / Consentement -->
+    <script data-cfasync="false" src="https://cmp.gatekeeperconsent.com/min.js"></script>
+    <script data-cfasync="false" src="https://the.gatekeeperconsent.com/cmp.min.js"></script>
+
+    <!-- Ezoic Main Scripts -->
+    <script async src="//www.ezojs.com/ezoic/sa.min.js"></script>
+    <script>
+        window.ezstandalone = window.ezstandalone || {};
+        ezstandalone.cmd = ezstandalone.cmd || [];
+    </script>
+    <script src="//ezoicanalytics.com/analytics.js"></script>
+    <!-- ==================================================== -->
+
+    <!-- Ton ancienne pub Google (tu pourras la retirer plus tard) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3952975727989882"
+         crossorigin="anonymous"></script>
 </head>
 <body>
-<a class="skip-link" href="#main">Aller au contenu</a>
+    <a class="skip-link" href="#main">Aller au contenu</a>
 
-<header class="topbar">
-  <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
-  <a class="brand" href="#/">
-    <span class="brand-logo">🧰</span>
-    <span class="brand-name">Outils<b>Box</b></span>
-  </a>
-  <div class="search-wrap">
-    <input id="globalSearch" type="search" placeholder="Rechercher un outil…" autocomplete="off" aria-label="Rechercher un outil">
-    <div id="searchResults" class="search-results" hidden></div>
-  </div>
-  <button class="icon-btn" id="themeToggle" aria-label="Changer de thème" title="Thème clair / sombre">🌙</button>
-</header>
+    <header class="topbar">
+      <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+      <a class="brand" href="#/">
+        <span class="brand-logo">🧰</span>
+        <span class="brand-name">Outils<b>Box</b></span>
+      </a>
+      <div class="search-wrap">
+        <input id="globalSearch" type="search" placeholder="Rechercher un outil…" autocomplete="off" aria-label="Rechercher un outil">
+        <div id="searchResults" class="search-results" hidden></div>
+      </div>
+      <button class="icon-btn" id="themeToggle" aria-label="Changer de thème" title="Thème clair / sombre">🌙</button>
+    </header>
 
-<!-- Bannière de pub (haut) -->
-<div class="ad-slot ad-leaderboard" data-ad="top-leaderboard">
-  <span class="ad-label">Emplacement publicitaire</span>
-</div>
-
-<div class="layout">
-  <aside class="sidebar" id="sidebar" aria-label="Catégories">
-    <nav id="categoryNav"></nav>
-    <!-- Bannière de pub (colonne) -->
-    <div class="ad-slot ad-rail" data-ad="sidebar-rail">
-      <span class="ad-label">Pub</span>
+    <!-- Bannière de pub (haut) -->
+    <div class="ad-slot ad-leaderboard" data-ad="top-leaderboard">
+      <span class="ad-label">Emplacement publicitaire</span>
     </div>
-  </aside>
-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-  <main id="main" class="content" tabindex="-1"></main>
-</div>
+    <div class="layout">
+      <aside class="sidebar" id="sidebar" aria-label="Catégories">
+        <nav id="categoryNav"></nav>
+        <!-- Bannière de pub (colonne) -->
+        <div class="ad-slot ad-rail" data-ad="sidebar-rail">
+          <span class="ad-label">Pub</span>
+        </div>
+      </aside>
+      <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-<footer class="footer">
-  <div class="footer-inner">
-    <span>© <span id="year"></span> OutilsBox — Tous les outils fonctionnent dans votre navigateur.</span>
-    <span class="footer-links">
-      <a href="#/">Accueil</a> · <a href="#/tool/about">À propos</a> · <a href="#/tool/privacy">Confidentialité</a>
-    </span>
-  </div>
-</footer>
-
-<!-- Interstitiel de pub -->
-<div class="modal-backdrop" id="adInterstitial" hidden>
-  <div class="modal ad-interstitial-box" role="dialog" aria-modal="true" aria-label="Publicité">
-    <div class="ad-slot ad-interstitial" data-ad="interstitial">
-      <span class="ad-label">Publicité</span>
+      <main id="main" class="content" tabindex="-1"></main>
     </div>
-    <p class="ad-note">Votre outil se lance après la publicité…</p>
-    <button class="btn btn-primary" id="adContinue" disabled>Continuer (<span id="adCountdown">5</span>)</button>
-  </div>
-</div>
 
-<div id="toast" class="toast" hidden></div>
+    <footer class="footer">
+      <div class="footer-inner">
+        <span>© <span id="year"></span> OutilsBox — Tous les outils fonctionnent dans votre navigateur.</span>
+        <span class="footer-links">
+          <a href="#/">Accueil</a> · <a href="#/tool/about">À propos</a> · <a href="#/tool/privacy">Confidentialité</a>
+        </span>
+      </div>
+    </footer>
 
-<!-- Bouton de soutien (lien direct vers la page de paiement PayPal) -->
-<a class="support-btn" href="https://www.paypal.com/ncp/payment/L6BR6EY7WHRRA" target="_blank" rel="noopener noreferrer">
-  <span class="sb-icon" aria-hidden="true">🧡</span> Soutenez notre projet
-</a>
+    <!-- Interstitiel de pub -->
+    <div class="modal-backdrop" id="adInterstitial" hidden>
+      <div class="modal ad-interstitial-box" role="dialog" aria-modal="true" aria-label="Publicité">
+        <div class="ad-slot ad-interstitial" data-ad="interstitial">
+          <span class="ad-label">Publicité</span>
+        </div>
+        <p class="ad-note">Votre outil se lance après la publicité…</p>
+        <button class="btn btn-primary" id="adContinue" disabled>Continuer (<span id="adCountdown">5</span>)</button>
+      </div>
+    </div>
 
-<!-- Librairies (chargées à la demande par les outils) -->
-<script type="module" src="./js/main.js"></script>
+    <div id="toast" class="toast" hidden></div>
+
+    <!-- Bouton de soutien -->
+    <a class="support-btn" href="https://www.paypal.com/ncp/payment/L6BR6EY7WHRRA" target="_blank" rel="noopener noreferrer">
+      <span class="sb-icon" aria-hidden="true">🧡</span> Soutenez notre projet
+    </a>
+
+    <!-- Librairies -->
+    <script type="module" src="./js/main.js"></script>
 </body>
 </html>
