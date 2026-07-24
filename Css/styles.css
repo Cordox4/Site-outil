@@ -292,22 +292,17 @@ table.data tr:hover td{background:color-mix(in srgb, var(--surface-2) 60%, trans
 .footer-social{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-weight:600;transition:color .15s ease}
 .footer-social:hover{color:var(--primary)}
 
-/* Bouton de soutien (flottant, redirige vers PayPal) */
+/* Bouton de soutien (fixé dans le footer, redirige vers PayPal) */
 .support-btn{
-  position:fixed;right:20px;bottom:20px;z-index:80;
   display:inline-flex;align-items:center;gap:8px;
-  padding:13px 20px;border-radius:999px;
-  background:var(--primary);color:#fff;font-weight:700;font-size:.92rem;
+  padding:9px 16px;border-radius:999px;
+  background:var(--primary);color:#fff;font-weight:700;font-size:.86rem;
   font-family:var(--font-display);text-decoration:none;letter-spacing:-.01em;
-  box-shadow:var(--shadow-glow);
-  transition:transform .15s var(--ease),background-color .15s var(--ease),box-shadow .15s var(--ease);
+  transition:transform .15s var(--ease),background-color .15s var(--ease);
 }
 .support-btn:hover{background:var(--primary-600);transform:translateY(-2px);text-decoration:none;color:#fff}
 .support-btn:active{transform:translateY(0) scale(.96)}
-.support-btn .sb-icon{font-size:1.05rem}
-@media(max-width:520px){
-  .support-btn{right:14px;bottom:14px;padding:11px 16px;font-size:.84rem}
-}
+.support-btn .sb-icon{font-size:1rem}
 
 /* Sidebar mobile */
 .sidebar-backdrop{display:none}
@@ -335,3 +330,4 @@ table.data tr:hover td{background:color-mix(in srgb, var(--surface-2) 60%, trans
 
 .hidden{display:none!important}
 [hidden]{display:none!important}
+
