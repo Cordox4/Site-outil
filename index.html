@@ -11,27 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./Css/styles.css">
 
-    <!-- === EZOIC - SCRIPTS OBLIGATOIRES (à garder en haut) === -->
-    <!-- Privacy / Consentement -->
-    <script data-cfasync="false" src="https://cmp.gatekeeperconsent.com/min.js"></script>
-    <script data-cfasync="false" src="https://the.gatekeeperconsent.com/cmp.min.js"></script>
-
-    <!-- Ezoic Main Scripts -->
-    <script async src="//www.ezojs.com/ezoic/sa.min.js"></script>
-    <script>
-        window.ezstandalone = window.ezstandalone || {};
-        ezstandalone.cmd = ezstandalone.cmd || [];
-    </script>
-    <script src="//ezoicanalytics.com/analytics.js"></script>
-    <!-- ==================================================== -->
-
-    <!-- Ancien script Google AdSense, désactivé : Ezoic gère déjà la demande
-         publicitaire (y compris Google) et faire tourner les deux en même
-         temps peut réduire tes revenus / poser problème avec les règles
-         Ezoic. Supprime complètement ce bloc une fois que tu as confirmé
-         que les pubs Ezoic s'affichent bien.
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3952975727989882"
-         crossorigin="anonymous"></script>
+    <!-- Google AdSense : à activer une fois le compte approuvé.
+         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+              crossorigin="anonymous"></script>
     -->
 </head>
 <body>
@@ -50,18 +32,14 @@
       <button class="icon-btn" id="themeToggle" aria-label="Changer de thème" title="Thème clair / sombre">🌙</button>
     </header>
 
-    <!-- Bannière de pub (haut) — Ezoic placeholder 101 -->
-    <div class="ad-slot ad-leaderboard" data-ad="top-leaderboard">
-      <div id="ezoic-pub-ad-placeholder-101"></div>
-    </div>
+    <!-- Bannière de pub (haut) — emplacement AdSense à venir -->
+    <div class="ad-slot ad-leaderboard" data-ad="top-leaderboard"></div>
 
     <div class="layout">
       <aside class="sidebar" id="sidebar" aria-label="Catégories">
         <nav id="categoryNav"></nav>
-        <!-- Bannière de pub (colonne) — Ezoic placeholder 102 -->
-        <div class="ad-slot ad-rail" data-ad="sidebar-rail">
-          <div id="ezoic-pub-ad-placeholder-102"></div>
-        </div>
+        <!-- Bannière de pub (colonne) — emplacement AdSense à venir -->
+        <div class="ad-slot ad-rail" data-ad="sidebar-rail"></div>
       </aside>
       <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
@@ -72,7 +50,7 @@
       <div class="footer-inner">
         <span>© <span id="year"></span> OutilsBox — Tous les outils fonctionnent dans votre navigateur.</span>
         <span class="footer-links">
-          <a href="#/">Accueil</a> · <a href="#/tool/about">À propos</a> · <a href="#/tool/privacy">Confidentialité</a>
+          <a href="#/">Accueil</a> · <a href="#/tool/about">À propos</a> · <a href="#/tool/contact">Contact</a> · <a href="#/tool/privacy">Confidentialité</a> · <a href="#/tool/terms">Conditions d'utilisation</a>
         </span>
         <a href="https://x.com/cordox4" target="_blank" rel="noopener noreferrer" class="footer-social">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -84,20 +62,10 @@
       </div>
     </footer>
 
-    <!-- Interstitiel de pub -->
-    <div class="modal-backdrop" id="adInterstitial" hidden>
-      <div class="modal ad-interstitial-box" role="dialog" aria-modal="true" aria-label="Publicité">
-        <div class="ad-slot ad-interstitial" data-ad="interstitial">
-          <div id="ezoic-pub-ad-placeholder-104"></div>
-        </div>
-        <p class="ad-note">Votre outil se lance après la publicité…</p>
-        <button class="btn btn-primary" id="adContinue" disabled>Continuer (<span id="adCountdown">5</span>)</button>
-      </div>
-    </div>
-
     <div id="toast" class="toast" hidden></div>
 
     <!-- Librairies -->
     <script type="module" src="./js/main.js"></script>
 </body>
 </html>
+
