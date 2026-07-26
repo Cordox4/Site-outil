@@ -1,4 +1,4 @@
-import { el, panel, field, button, status } from '../ui.js';
+import { el, panel, field, button, status, toolArticle } from '../ui.js';
 
 const UNITS = {
   Longueur: { m: 1, km: 1000, cm: 0.01, mm: 0.001, mi: 1609.34, yd: 0.9144, ft: 0.3048, in: 0.0254 },
@@ -28,6 +28,25 @@ export const tools = {
       [from, to, val].forEach(e => e.addEventListener('input', upd));
       p.append(field('Catégorie', cat), el('div', { class: 'row' }, field('De', from), field('Vers', to)), el('div', { class: 'row' }, field('Valeur', val), field('Résultat', out)));
       fillUnits(); upd();
+      root.append(toolArticle({
+        intro: [
+          'Ce convertisseur d\'unités regroupe six catégories parmi les plus utilisées au quotidien : longueur, poids, volume, surface, vitesse et données numériques (octets, kilo-octets, méga-octets…). Il permet de passer d\'une unité à une autre instantanément, sans avoir à mémoriser les formules de conversion.',
+          'Que vous ayez besoin de convertir des kilomètres en miles pour un voyage, des livres en kilogrammes pour une recette, ou des gigaoctets en mégaoctets pour du stockage informatique, l\'outil s\'adapte à chaque cas grâce à ses six catégories.',
+        ],
+        steps: [
+          'Choisissez la catégorie d\'unités à convertir (longueur, poids, volume…).',
+          'Sélectionnez l\'unité de départ et l\'unité d\'arrivée.',
+          'Saisissez la valeur à convertir : le résultat se met à jour automatiquement.',
+        ],
+        tips: [
+          'Pour les unités de données, l\'outil utilise la convention binaire (1 Ko = 1024 o), qui correspond à ce qu\'affichent la plupart des systèmes d\'exploitation.',
+          'Vous pouvez inverser rapidement une conversion en intervertissant les unités "De" et "Vers".',
+        ],
+        faq: [
+          { q: 'Combien y a-t-il de kilomètres dans un mile ?', a: 'Un mile équivaut à environ 1,60934 kilomètre. L\'outil applique ce facteur de conversion automatiquement dans la catégorie Longueur.' },
+          { q: 'Pourquoi mes gigaoctets ne correspondent pas exactement à ce qu\'affiche mon disque dur ?', a: 'Les fabricants de disques durs utilisent parfois la convention décimale (1 Go = 1 000 000 000 o) alors que les systèmes d\'exploitation utilisent la convention binaire (1 Go = 1024³ o), ce qui explique un léger écart d\'affichage.' },
+        ],
+      }));
     },
   },
   'temperature': {
@@ -41,6 +60,23 @@ export const tools = {
       k.addEventListener('input', () => { const t = +k.value - 273.15; c.value = t.toFixed(2); f.value = (t * 9 / 5 + 32).toFixed(2); });
       p.append(el('div', { class: 'row' }, field('Celsius °C', c), field('Fahrenheit °F', f), field('Kelvin K', k)));
       setFromC(20);
+      root.append(toolArticle({
+        intro: [
+          'Cet outil convertit une température entre les trois échelles les plus courantes : Celsius (utilisée en France et dans la majorité du monde), Fahrenheit (utilisée notamment aux États-Unis) et Kelvin (l\'unité de référence en physique et en sciences). Modifiez n\'importe lequel des trois champs, les deux autres se recalculent aussitôt.',
+        ],
+        steps: [
+          'Saisissez une valeur dans n\'importe lequel des trois champs (Celsius, Fahrenheit ou Kelvin).',
+          'Les deux autres échelles se mettent à jour automatiquement.',
+        ],
+        tips: [
+          'Formule Celsius → Fahrenheit : °F = °C × 9/5 + 32. Formule Celsius → Kelvin : K = °C + 273,15.',
+          '0 °C correspond à 32 °F et à 273,15 K ; 100 °C (ébullition de l\'eau) correspond à 212 °F et à 373,15 K.',
+        ],
+        faq: [
+          { q: 'Pourquoi le Kelvin n\'a-t-il pas de valeurs négatives usuelles ?', a: 'Le Kelvin est une échelle absolue dont le zéro (0 K, soit -273,15 °C) correspond au zéro absolu, la température la plus basse théoriquement atteignable. Il n\'existe donc pas de température négative en Kelvin dans l\'usage courant.' },
+          { q: 'Comment convertir rapidement une température Fahrenheit en Celsius de tête ?', a: 'Une approximation rapide consiste à soustraire 32 puis diviser par 2 (au lieu de diviser par 1,8) : le résultat est proche mais moins précis que le calcul exact utilisé par cet outil.' },
+        ],
+      }));
     },
   },
   'currency': {
@@ -65,6 +101,26 @@ export const tools = {
       [from, to, amount].forEach(e => e.addEventListener('change', go));
       amount.addEventListener('input', () => {});
       p.append(el('div', { class: 'row' }, field('Montant', amount), field('De', from), field('Vers', to)), el('div', { class: 'btn-row' }, button('Convertir', go)), field('Résultat', out), st); go();
+      root.append(toolArticle({
+        intro: [
+          'Ce convertisseur de devises affiche des taux de change réels, mis à jour quotidiennement, en s\'appuyant sur les taux de référence publiés par la Banque centrale européenne via l\'API publique Frankfurter. Il couvre une sélection des devises les plus utilisées : euro, dollar, livre sterling, yen, franc suisse, et plusieurs devises africaines et asiatiques.',
+          'Contrairement aux outils précédents, cette conversion nécessite une connexion internet, car le taux du jour est récupéré en temps réel plutôt que calculé localement.',
+        ],
+        steps: [
+          'Saisissez le montant à convertir.',
+          'Choisissez la devise de départ et la devise d\'arrivée.',
+          'Cliquez sur "Convertir" pour obtenir le montant équivalent au taux du jour.',
+        ],
+        tips: [
+          'Le taux affiché correspond au taux de change de référence, sans les frais que peuvent appliquer les banques ou bureaux de change lors d\'une opération réelle.',
+          'Les taux de change varient en continu sur les marchés financiers ; ceux affichés ici sont mis à jour une fois par jour ouvré.',
+        ],
+        faq: [
+          { q: 'D\'où viennent les taux de change affichés ?', a: 'Ils proviennent de l\'API Frankfurter, qui republie les taux de référence quotidiens de la Banque centrale européenne (BCE), une source largement utilisée pour ce type de conversion.' },
+          { q: 'Puis-je utiliser ce taux pour effectuer un virement bancaire ?', a: 'Ce taux donne une indication fiable, mais votre banque ou service de transfert applique généralement une marge supplémentaire ; le montant final peut donc légèrement différer.' },
+          { q: 'Que faire si la conversion affiche une erreur réseau ?', a: 'Vérifiez votre connexion internet et réessayez : le service dépend d\'une API externe qui peut être temporairement indisponible.' },
+        ],
+      }));
     },
   },
   'timezones': {
@@ -85,6 +141,24 @@ export const tools = {
       const obs = new MutationObserver(() => { if (!document.body.contains(out)) { clearInterval(iv); obs.disconnect(); } });
       obs.observe(document.body, { childList: true, subtree: true });
       p.append(out);
+      root.append(toolArticle({
+        intro: [
+          'Cet outil affiche l\'heure actuelle dans une douzaine de grandes villes réparties sur les principaux fuseaux horaires du globe, mise à jour en direct chaque seconde. Il est pratique pour planifier une réunion internationale, un appel avec un client à l\'étranger, ou simplement savoir quelle heure il est ailleurs avant d\'appeler un proche.',
+        ],
+        steps: [
+          'Ouvrez la page : le tableau des fuseaux horaires s\'affiche automatiquement.',
+          'Repérez la ville ou la région qui vous intéresse dans la liste.',
+          'L\'heure, le jour de la semaine et la date se mettent à jour en temps réel.',
+        ],
+        tips: [
+          'Les fuseaux horaires tiennent compte automatiquement du changement d\'heure été/hiver là où il s\'applique, grâce aux données de fuseaux horaires du navigateur.',
+          'Pour planifier une réunion, notez l\'écart d\'heures entre votre fuseau et celui de votre interlocuteur : il peut varier au fil de l\'année selon les changements d\'heure de chaque pays.',
+        ],
+        faq: [
+          { q: 'Pourquoi certaines villes affichent-elles un décalage inhabituel ?', a: 'Certains pays utilisent des décalages horaires non entiers (par exemple +5h30 pour l\'Inde) ou ne pratiquent pas le changement d\'heure été/hiver, ce qui peut donner des écarts différents de ceux auxquels on s\'attend.' },
+          { q: 'L\'heure affichée est-elle celle de mon appareil ou celle du serveur ?', a: 'Elle est calculée à partir de l\'horloge de votre appareil, convertie pour chaque fuseau horaire affiché : aucune donnée n\'est envoyée à un serveur.' },
+        ],
+      }));
     },
   },
 };
