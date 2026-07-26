@@ -146,7 +146,6 @@ h1,h2,h3{font-family:var(--font-display);line-height:1.15;margin:0 0 .4em;letter
 .ad-leaderboard{max-width:var(--maxw);margin:16px auto 0;height:90px}
 .ad-rail{margin-top:20px;height:600px;position:sticky;top:360px}
 .ad-inline{height:120px;margin:24px 0}
-.ad-interstitial{height:250px;width:100%}
 @media(max-width:900px){.ad-rail{display:none}.ad-leaderboard{height:60px}}
 
 /* Hero / home */
@@ -203,6 +202,17 @@ h1,h2,h3{font-family:var(--font-display);line-height:1.15;margin:0 0 .4em;letter
   transition:border-color .15s var(--ease);
 }
 .panel + .panel{margin-top:0}
+
+/* Contenu éditorial sous les outils */
+.article-panel{line-height:1.65}
+.article-panel h2.article-title{font-size:1.2rem;margin:0 0 10px}
+.article-panel h3{font-size:1rem;margin:20px 0 8px}
+.article-panel p{margin:0 0 10px;color:var(--text)}
+.article-panel .article-steps,.article-panel .article-tips{margin:0 0 8px;padding-left:22px}
+.article-panel .article-steps li,.article-panel .article-tips li{margin-bottom:6px}
+.article-faq details{border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:8px;background:var(--surface-2)}
+.article-faq summary{cursor:pointer;font-weight:600;font-size:.92rem}
+.article-faq details p{margin:8px 0 0;color:var(--muted);font-size:.92rem}
 
 /* Form controls */
 .field{margin-bottom:15px;display:block}
