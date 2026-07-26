@@ -1,4 +1,4 @@
-import { el, panel, field, button, dropzone, download, readFile, status, loadScript, bytes, adInterstitial, backendNotice } from '../ui.js';
+import { el, panel, field, button, dropzone, download, readFile, status, loadScript, bytes, backendNotice, toolArticle } from '../ui.js';
 
 const PDFLIB_SRC = 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js';
 const PDFJS_SRC = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
@@ -90,7 +90,6 @@ export const tools = {
       const go = button('Fusionner les PDF', async () => {
         go.disabled = true; go.textContent = 'Fusion…';
         try {
-          await adInterstitial();
           const { PDFDocument } = await pdflib();
           const merged = await PDFDocument.create();
           for (const f of files) {
@@ -105,6 +104,25 @@ export const tools = {
       });
       go.disabled = true;
       p.append(el('div', { class: 'btn-row' }, go), out);
+      root.append(toolArticle({
+        intro: [
+          'Fusionner plusieurs fichiers PDF en un seul document est une tâche courante : rassembler des factures, constituer un dossier administratif, ou regrouper plusieurs chapitres d\'un rapport. Cet outil combine vos fichiers PDF dans l\'ordre de votre choix, sans perte de qualité ni de mise en page.',
+          'La fusion s\'effectue entièrement dans votre navigateur grâce à la bibliothèque pdf-lib : vos documents ne sont jamais envoyés vers un serveur, ce qui est particulièrement important pour des documents sensibles comme des contrats ou des pièces d\'identité.',
+        ],
+        steps: [
+          'Glissez-déposez au moins deux fichiers PDF, ou cliquez pour les sélectionner.',
+          'Réorganisez l\'ordre des fichiers par glisser-déposer dans la liste si nécessaire.',
+          'Cliquez sur "Fusionner les PDF" : le document combiné se télécharge automatiquement.',
+        ],
+        tips: [
+          'L\'ordre dans lequel les fichiers apparaissent dans la liste détermine l\'ordre des pages dans le PDF final : vérifiez-le avant de lancer la fusion.',
+          'Cet outil fonctionne aussi bien pour deux fichiers que pour plusieurs dizaines à la fois.',
+        ],
+        faq: [
+          { q: 'Y a-t-il une limite au nombre de fichiers que je peux fusionner ?', a: 'Il n\'y a pas de limite fixée par l\'outil ; la seule contrainte pratique est la mémoire disponible sur votre appareil pour des fichiers très volumineux.' },
+          { q: 'La fusion fonctionne-t-elle avec des PDF protégés par mot de passe ?', a: 'Les PDF protégés en lecture (nécessitant un mot de passe pour s\'ouvrir) ne peuvent pas être traités ; utilisez d\'abord l\'outil de déverrouillage si le mot de passe restreint uniquement l\'impression ou la copie.' },
+        ],
+      }));
     },
   },
 
@@ -121,6 +139,25 @@ export const tools = {
         onChange: f => { files = f; out.innerHTML = ''; zone.innerHTML = ''; if (files.length) loadPages(); },
       });
       p.append(zone, out);
+      root.append(toolArticle({
+        intro: [
+          'Extraire certaines pages d\'un PDF ou séparer un document en plusieurs fichiers indépendants est utile pour ne partager qu\'une partie d\'un dossier, isoler un chapitre, ou transmettre uniquement une page spécifique sans dévoiler le reste du document.',
+          'Cet outil affiche un aperçu visuel de chaque page du PDF, ce qui permet de choisir précisément les pages à extraire avant de générer le nouveau fichier.',
+        ],
+        steps: [
+          'Importez votre fichier PDF : l\'aperçu de chaque page s\'affiche automatiquement.',
+          'Cliquez sur les pages que vous souhaitez garder (ou utilisez "Tout cocher").',
+          'Cliquez sur "Extraire la sélection" pour obtenir un PDF avec uniquement ces pages, ou sur "Séparer chaque page" pour télécharger un fichier PDF par page.',
+        ],
+        tips: [
+          'Utilisez "Séparer chaque page" lorsque vous devez transmettre chaque page individuellement, par exemple pour un archivage page par page.',
+          'Utilisez "Extraire la sélection" pour créer un seul nouveau PDF regroupant uniquement les pages choisies, dans leur ordre d\'origine.',
+        ],
+        faq: [
+          { q: 'Puis-je sélectionner des pages non consécutives ?', a: 'Oui, vous pouvez cocher n\'importe quelle combinaison de pages, consécutives ou non ; elles seront réunies dans l\'ordre d\'origine du document dans le fichier extrait.' },
+          { q: 'Le document original est-il modifié ?', a: 'Non, l\'outil crée un nouveau fichier à partir de votre PDF d\'origine, qui reste intact sur votre appareil.' },
+        ],
+      }));
 
       async function loadPages() {
         zone.innerHTML = '';
@@ -171,7 +208,6 @@ export const tools = {
             if (!selected.size) return;
             out.innerHTML = ''; out.append(status('Extraction en cours…', 'info'));
             try {
-              await adInterstitial();
               const { PDFDocument } = await pdflib();
               const src = await PDFDocument.load(await readFile(files[0]), { ignoreEncryption: true });
               const idx = [...selected].sort((a, b) => a - b);
@@ -185,7 +221,6 @@ export const tools = {
           const goEach = button('Séparer chaque page', async () => {
             out.innerHTML = ''; out.append(status('Séparation en cours…', 'info'));
             try {
-              await adInterstitial();
               const { PDFDocument } = await pdflib();
               const src = await PDFDocument.load(await readFile(files[0]), { ignoreEncryption: true });
               for (let i = 0; i < total; i++) {
@@ -219,7 +254,6 @@ export const tools = {
       p.append(el('div', { class: 'btn-row' }, button('Compresser', async () => {
         if (!files.length) { out.innerHTML = ''; out.append(status('Ajoutez un PDF.', 'err')); return; }
         try {
-          await adInterstitial();
           const { PDFDocument } = await pdflib();
           const src = await PDFDocument.load(await readFile(files[0]), { ignoreEncryption: true });
           const saved = await src.save({ useObjectStreams: true });
@@ -229,6 +263,25 @@ export const tools = {
           out.append(status(`Avant : ${bytes(before)} → Après : ${bytes(after)} (${Math.max(0, Math.round((1 - after / before) * 100))}% en moins)`, 'ok'));
         } catch (e) { out.innerHTML = ''; out.append(status('Erreur : ' + e.message, 'err')); }
       }), out));
+      root.append(toolArticle({
+        intro: [
+          'Un PDF trop volumineux peut être refusé par un formulaire d\'envoi de dossier, dépasser la limite d\'une pièce jointe e-mail, ou simplement ralentir son partage. Cet outil réécrit la structure interne du fichier (objets, flux de données) pour réduire son poids, sans passer par un serveur externe.',
+          'Cette compression fonctionne particulièrement bien sur des PDF générés par certains logiciels qui ajoutent des données redondantes. Pour des PDF contenant surtout des images très lourdes (scans haute résolution), le gain peut être plus limité côté navigateur, un traitement serveur pouvant alors offrir une compression plus agressive.',
+        ],
+        steps: [
+          'Importez le fichier PDF à compresser.',
+          'Cliquez sur "Compresser".',
+          'Le fichier optimisé se télécharge, avec le pourcentage de réduction obtenu affiché.',
+        ],
+        tips: [
+          'Si le gain de compression est faible, votre PDF est probablement déjà composé essentiellement d\'images : pensez à compresser les images avant de les insérer dans le document source.',
+          'Comparez toujours le fichier compressé à l\'original pour vérifier que la qualité visuelle reste satisfaisante pour votre usage.',
+        ],
+        faq: [
+          { q: 'La compression dégrade-t-elle le texte du PDF ?', a: 'Non, cette compression optimise la structure interne du fichier sans altérer le texte ni les images : le contenu reste identique, seul le poids du fichier est réduit.' },
+          { q: 'Pourquoi le gain de compression est-il parfois faible ?', a: 'Un PDF déjà optimisé par le logiciel qui l\'a généré, ou composé principalement d\'images déjà compressées, laisse moins de marge de réduction supplémentaire.' },
+        ],
+      }));
     },
   },
 
@@ -260,7 +313,6 @@ export const tools = {
       p.append(el('div', { class: 'btn-row' }, button('Convertir en JPG', async () => {
         if (!files.length) { out.innerHTML = ''; out.append(status('Ajoutez un PDF.', 'err')); return; }
         try {
-          await adInterstitial();
           const lib = await pdfjs();
           const data = new Uint8Array(await readFile(files[0]));
           const doc = await lib.getDocument({ data }).promise;
@@ -275,6 +327,24 @@ export const tools = {
           out.innerHTML = ''; out.append(status(`${doc.numPages} page(s) converties ✔`, 'ok'));
         } catch (e) { out.innerHTML = ''; out.append(status('Erreur : ' + e.message, 'err')); }
       }), out));
+      root.append(toolArticle({
+        intro: [
+          'Convertir les pages d\'un PDF en images JPG permet de les insérer facilement dans une présentation, un article de blog, ou de les partager sur un support qui n\'accepte pas les fichiers PDF. Cet outil génère une image JPG distincte pour chaque page du document.',
+        ],
+        steps: [
+          'Importez le fichier PDF à convertir.',
+          'Choisissez la qualité d\'image souhaitée (standard à maximale).',
+          'Cliquez sur "Convertir en JPG" : une image par page se télécharge automatiquement.',
+        ],
+        tips: [
+          'Une qualité "Haute" ou "Maximale" est recommandée si vous prévoyez d\'agrandir ou d\'imprimer les images obtenues.',
+          'Pour un document de nombreuses pages, votre navigateur peut demander une confirmation avant de télécharger plusieurs fichiers d\'un coup : acceptez le téléchargement multiple pour récupérer toutes les pages.',
+        ],
+        faq: [
+          { q: 'Le texte du PDF reste-t-il sélectionnable dans les images obtenues ?', a: 'Non, chaque page est convertie en image (pixels), le texte n\'est donc plus sélectionnable ni copiable une fois converti en JPG.' },
+          { q: 'Puis-je convertir uniquement certaines pages ?', a: 'Cet outil convertit toutes les pages du document. Pour ne convertir qu\'une sélection, utilisez d\'abord l\'outil de division PDF pour extraire les pages souhaitées.' },
+        ],
+      }));
     },
   },
 
@@ -288,7 +358,6 @@ export const tools = {
       p.append(el('div', { class: 'btn-row' }, button('Créer le PDF', async () => {
         if (!files.length) { out.innerHTML = ''; out.append(status('Ajoutez des images.', 'err')); return; }
         try {
-          await adInterstitial();
           const { PDFDocument } = await pdflib();
           const doc = await PDFDocument.create();
           for (const f of files) {
@@ -301,6 +370,25 @@ export const tools = {
           out.innerHTML = ''; out.append(status('PDF créé ✔', 'ok'));
         } catch (e) { out.innerHTML = ''; out.append(status('Erreur (PNG/JPG uniquement) : ' + e.message, 'err')); }
       }), out));
+      root.append(toolArticle({
+        intro: [
+          'Assembler plusieurs images en un seul document PDF est pratique pour envoyer un ensemble de photos ou de scans sous forme d\'un fichier unique et facilement imprimable, par exemple des photos de justificatifs, des pages scannées à la main, ou une série de captures d\'écran.',
+          'Chaque image devient une page du PDF, dans l\'ordre où elle apparaît dans la liste, à sa taille d\'origine.',
+        ],
+        steps: [
+          'Importez une ou plusieurs images (PNG ou JPG).',
+          'Réorganisez-les par glisser-déposer si l\'ordre des pages doit être différent.',
+          'Cliquez sur "Créer le PDF" pour télécharger le document final.',
+        ],
+        tips: [
+          'Pour un rendu homogène, utilisez des images de proportions similaires : des images très différentes en taille produiront des pages PDF de dimensions différentes.',
+          'Cet outil accepte les formats PNG et JPG ; pour d\'autres formats (WebP, HEIC…), convertissez d\'abord l\'image avec l\'outil de conversion d\'image adapté.',
+        ],
+        faq: [
+          { q: 'Puis-je mélanger des images PNG et JPG dans le même PDF ?', a: 'Oui, l\'outil gère les deux formats simultanément et les assemble dans un même document, dans l\'ordre choisi.' },
+          { q: 'La qualité des images est-elle réduite lors de la conversion ?', a: 'Non, chaque image est intégrée à sa résolution d\'origine dans le PDF, sans recompression supplémentaire.' },
+        ],
+      }));
     },
   },
 
@@ -351,7 +439,6 @@ export const tools = {
         if (!files.length) { out.innerHTML = ''; out.append(status('Ajoutez un PDF.', 'err')); return; }
         out.innerHTML = ''; out.append(status('Rotation en cours…', 'info'));
         try {
-          await adInterstitial();
           const angle = currentAngle;
           if (angle % 90 === 0) {
             const { PDFDocument, degrees } = await pdflib();
@@ -392,6 +479,24 @@ export const tools = {
           out.innerHTML = ''; out.append(status('PDF pivoté ✔', 'ok'));
         } catch (e) { out.innerHTML = ''; out.append(status('Erreur : ' + e.message, 'err')); }
       }), out));
+      root.append(toolArticle({
+        intro: [
+          'Il arrive fréquemment qu\'un document scanné ou photographié soit enregistré à l\'envers ou de travers. Cet outil fait pivoter toutes les pages d\'un PDF selon l\'angle de votre choix : les angles classiques (90°, 180°, 270°) grâce à la rotation native du format PDF, mais aussi n\'importe quel angle libre grâce au cadran interactif, pour corriger une légère inclinaison de scan.',
+        ],
+        steps: [
+          'Importez le fichier PDF à faire pivoter.',
+          'Choisissez un angle prédéfini (90°, 180°, 270°) ou faites glisser le cadran pour un angle personnalisé.',
+          'Cliquez sur "Pivoter" pour télécharger le document corrigé.',
+        ],
+        tips: [
+          'Pour une simple erreur d\'orientation (page à l\'envers ou sur le côté), les angles de 90°, 180° ou 270° suffisent et préservent le texte sélectionnable du PDF.',
+          'Pour un scan légèrement de travers (par exemple 3° ou 7°), le mode angle libre redessine chaque page en image afin d\'appliquer une rotation précise : dans ce cas, le texte n\'est plus sélectionnable dans le résultat.',
+        ],
+        faq: [
+          { q: 'Quelle est la différence entre un angle de 90° et un angle libre ?', a: 'Un angle multiple de 90° utilise l\'attribut de rotation natif du PDF, qui préserve le texte sélectionnable. Un angle libre (non multiple de 90°) nécessite de redessiner chaque page comme une image, car le format PDF ne permet pas nativement une rotation à un angle quelconque.' },
+          { q: 'La rotation s\'applique-t-elle à toutes les pages ?', a: 'Oui, l\'angle choisi est appliqué uniformément à l\'ensemble des pages du document.' },
+        ],
+      }));
     },
   },
 
@@ -412,6 +517,25 @@ export const tools = {
           out.innerHTML = ''; out.append(status('PDF déverrouillé ✔', 'ok'));
         } catch (e) { out.innerHTML = ''; out.append(status('Erreur (mot de passe utilisateur requis) : ' + e.message, 'err')); }
       }), out));
+      root.append(toolArticle({
+        intro: [
+          'Certains PDF sont protégés par un mot de passe "propriétaire", qui restreint des actions comme l\'impression, la copie de texte ou la modification, sans pour autant demander de mot de passe à l\'ouverture du fichier. Cet outil retire ce type de restriction en réécrivant la structure du document, pour les fichiers PDF qui vous appartiennent.',
+          'Il ne permet pas de contourner un mot de passe d\'ouverture (le PDF doit s\'ouvrir sans mot de passe pour être traité) : il agit uniquement sur les restrictions d\'usage appliquées par le propriétaire du document.',
+        ],
+        steps: [
+          'Importez le fichier PDF concerné.',
+          'Cliquez sur "Déverrouiller".',
+          'Le fichier sans restriction d\'impression ou de copie se télécharge.',
+        ],
+        tips: [
+          'N\'utilisez cet outil que sur des documents que vous possédez ou que vous avez le droit de modifier : retirer une protection sur un document appartenant à un tiers, sans autorisation, peut constituer une violation de ses droits.',
+          'Si le fichier demande un mot de passe pour s\'ouvrir, cet outil ne peut pas le déverrouiller : ce type de protection nécessite le mot de passe correct pour être retiré.',
+        ],
+        faq: [
+          { q: 'Quelle est la différence entre un mot de passe d\'ouverture et une restriction propriétaire ?', a: 'Le mot de passe d\'ouverture empêche d\'accéder au contenu du PDF sans le saisir. La restriction propriétaire, elle, permet d\'ouvrir et de lire le document librement, mais bloque certaines actions comme l\'impression ou la copie de texte.' },
+          { q: 'Est-il légal de retirer cette protection ?', a: 'Oui, dans la mesure où vous êtes le propriétaire du document ou que vous disposez de l\'autorisation de le modifier. Retirer la protection d\'un document appartenant à un tiers sans son accord n\'est pas approprié.' },
+        ],
+      }));
     },
   },
 
