@@ -1,13 +1,6 @@
 // ===== App bootstrap: router, layout, search, theme =====
 import { categories, tools, toolList, toolsByCategory } from './registry.js';
 import { el, adInline } from './ui.js';
-import { EZOIC_IDS, ezoicDefineAll, ezoicShow, ezoicDestroy } from './ezoic.js';
-
-/* ---------- Pub (Ezoic) ---------- */
-ezoicDefineAll();
-// Bannière du haut et colonne latérale : fixes dans le layout, jamais retirées
-// du DOM entre deux pages → on les affiche une seule fois au chargement.
-ezoicShow(EZOIC_IDS.leaderboard, EZOIC_IDS.sidebarRail);
 
 const content = document.getElementById('main');
 const nav = document.getElementById('categoryNav');
@@ -81,7 +74,7 @@ function renderHome() {
     const grid = el('div', { class: 'tool-grid' });
     items.forEach(t => grid.append(toolCard(t)));
     content.append(grid);
-    if (i === 1) content.append(adInline('home-mid', EZOIC_IDS.homeInline)); // ad after 2nd category
+    if (i === 1) content.append(adInline('home-mid')); // emplacement pub après la 2e catégorie
   });
   window.scrollTo(0, 0);
 }
@@ -128,12 +121,6 @@ async function renderTool(id) {
 /* ---------- Router ---------- */
 function route() {
   toggleSidebar(false);
-  // La pub d'accueil n'existe que sur "#/" : on la détruit avant de changer
-  // de page (sans effet si elle n'était pas affichée). On redemande aussi la
-  // bannière du haut et la colonne latérale pour améliorer le taux de
-  // remplissage sur chaque nouvelle "vue" du SPA.
-  ezoicDestroy(EZOIC_IDS.homeInline);
-  ezoicShow(EZOIC_IDS.leaderboard, EZOIC_IDS.sidebarRail);
   const hash = location.hash || '#/';
   const parts = hash.replace(/^#\//, '').split('/').filter(Boolean);
   if (parts[0] === 'tool' && parts[1]) return renderTool(parts[1]);
@@ -164,3 +151,4 @@ searchInput.addEventListener('focus', () => { if (searchInput.value) search(sear
 document.addEventListener('click', e => { if (!e.target.closest('.search-wrap')) searchResults.hidden = true; });
 
 route();
+
