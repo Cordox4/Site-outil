@@ -31,7 +31,14 @@ export const categories = [
 // Merge every module's tools into a single map { id -> tool }
 export const tools = Object.assign({}, pdf, image, text, dev, calc, convert, color, seo, media, network, ai, misc, pages);
 
-export const toolList = Object.entries(tools).map(([id, t]) => ({ id, ...t }));
+// On exclut les outils marqués badge:'API' (non implémentés / "à venir") des
+// grilles et de la recherche : Google déconseille fortement les pages
+// "en construction" pour l'acceptation AdSense. Le code de l'outil reste en
+// place dans son module ; il suffit de retirer `badge: 'API'` une fois
+// l'outil réellement fonctionnel pour qu'il réapparaisse automatiquement.
+export const toolList = Object.entries(tools)
+  .map(([id, t]) => ({ id, ...t }))
+  .filter(t => t.badge !== 'API');
 
 export function toolsByCategory(catId) {
   return toolList.filter(t => t.cat === catId);
