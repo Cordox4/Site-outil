@@ -25,8 +25,7 @@ export const tools = {
       root.append(panel(
         el('h3', {}, 'Nous écrire'),
         el('p', {}, 'Une question sur un outil, un bug à signaler, une idée de fonctionnalité ou une demande liée à la publicité et aux partenariats ? Le moyen le plus simple de nous joindre est par e-mail, à l\'adresse suivante :'),
-        el('p', { style: 'font-size:1.05rem;font-weight:700' }, 'contact@outilsbox.fr'),
-        el('p', { class: 'hint' }, '(adresse à remplacer par votre vraie adresse de contact avant mise en ligne)'),
+        el('p', { style: 'font-size:1.05rem;font-weight:700' }, 'okinstreamssf@gmail.com'),
         el('h3', {}, 'Signaler un problème technique'),
         el('p', {}, 'Si un outil ne fonctionne pas comme prévu, merci de préciser le nom de l\'outil concerné, votre navigateur (Chrome, Firefox, Safari…) et, si possible, les étapes pour reproduire le problème. Ces informations nous permettent de corriger les bugs beaucoup plus rapidement.'),
         el('h3', {}, 'Proposer un nouvel outil'),
@@ -60,7 +59,7 @@ export const tools = {
         el('p', {}, 'Conformément au RGPD, vous disposez d\'un droit d\'accès, de rectification et de suppression concernant les données personnelles vous concernant que nous pourrions détenir (par exemple si vous nous contactez par e-mail). Pour exercer ce droit, écrivez-nous depuis la page Contact.'),
         el('h3', {}, 'Modifications de cette politique'),
         el('p', {}, 'Cette politique peut être mise à jour pour refléter des évolutions du site ou de la réglementation. La date de dernière mise à jour figure en bas de cette page.'),
-        el('p', { class: 'hint' }, 'Dernière mise à jour : à compléter lors de la mise en ligne.'),
+        el('p', { class: 'hint' }, 'Dernière mise à jour : 26 juillet 2026.'),
       ));
     },
   },
@@ -86,7 +85,7 @@ export const tools = {
         el('p', {}, 'Ces conditions peuvent être modifiées à tout moment pour refléter l\'évolution du site. La poursuite de l\'utilisation du site après modification vaut acceptation des nouvelles conditions.'),
         el('h3', {}, '8. Droit applicable'),
         el('p', {}, 'Les présentes conditions sont soumises au droit français. Pour toute question, contactez-nous via la page Contact.'),
-        el('p', { class: 'hint' }, 'Dernière mise à jour : à compléter lors de la mise en ligne.'),
+        el('p', { class: 'hint' }, 'Dernière mise à jour : 26 juillet 2026.'),
       ));
     },
   },
