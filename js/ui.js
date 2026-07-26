@@ -64,46 +64,10 @@ export function bytes(n) {
   return n.toFixed(n < 10 ? 1 : 0) + ' ' + u[i];
 }
 
-import { EZOIC_IDS, ezoicShow, ezoicDestroy, ezoicPlaceholderDiv } from './ezoic.js';
-
-// Reusable ad banner. Si ezoicId est fourni, insère un vrai emplacement Ezoic
-// et demande son affichage ; sinon affiche juste un bloc décoratif (mode dev).
-export function adInline(id = 'inline', ezoicId = null) {
-  const slot = el('div', { class: 'ad-slot ad-inline', 'data-ad': id },
-    ezoicId ? ezoicPlaceholderDiv(ezoicId) : el('span', { class: 'ad-label' }, 'Emplacement publicitaire'));
-  if (ezoicId) ezoicShow(ezoicId);
-  return slot;
-}
-
-// Interstitial ad: shows placeholder, resolves when user continues.
-export function adInterstitial() {
-  return new Promise((resolve) => {
-    const backdrop = document.getElementById('adInterstitial');
-    const btn = document.getElementById('adContinue');
-    let n = 5;
-    // Reconstruit le bouton à chaque appel : après un premier passage, le
-    // span #adCountdown a été remplacé par du texte brut (voir plus bas),
-    // donc on le recrée pour que le décompte fonctionne à chaque fois.
-    btn.innerHTML = `Continuer (<span id="adCountdown">${n}</span>)`;
-    const cd = document.getElementById('adCountdown');
-    backdrop.hidden = false;
-    btn.disabled = true;
-    // On (re)demande une pub fraîche à Ezoic à chaque ouverture de la popup.
-    ezoicShow(EZOIC_IDS.interstitial);
-    const timer = setInterval(() => {
-      n--; cd.textContent = n;
-      if (n <= 0) { clearInterval(timer); btn.disabled = false; btn.textContent = 'Continuer'; }
-    }, 1000);
-    const onClick = () => {
-      clearInterval(timer);
-      backdrop.hidden = true;
-      btn.removeEventListener('click', onClick);
-      // On détruit l'emplacement pour repartir sur une pub neuve la prochaine fois.
-      ezoicDestroy(EZOIC_IDS.interstitial);
-      resolve();
-    };
-    btn.addEventListener('click', onClick);
-  });
+// Reusable ad banner (emplacement générique, prêt à recevoir un bloc AdSense
+// plus tard). N'affiche rien de publicitaire tant qu'aucun code n'est ajouté.
+export function adInline(id = 'inline') {
+  return el('div', { class: 'ad-slot ad-inline', 'data-ad': id });
 }
 
 // Drag & drop file zone. onFiles receives a FileList/array.
@@ -191,7 +155,31 @@ export function panel(...children) {
   return el('div', { class: 'panel' }, ...children.flat());
 }
 
+// Bloc de contenu éditorial affiché sous un outil : introduction, mode
+// d'emploi, astuces et FAQ. Sert à donner du contexte utile aux visiteurs
+// (et du contenu unique et substantiel sur chaque page d'outil).
+export function toolArticle({ title, intro = [], steps = [], tips = [], faq = [] } = {}) {
+  const parts = [];
+  if (title) parts.push(el('h2', { class: 'article-title' }, title));
+  intro.forEach(t => parts.push(el('p', {}, t)));
+  if (steps.length) {
+    parts.push(el('h3', {}, 'Comment utiliser cet outil'));
+    parts.push(el('ol', { class: 'article-steps' }, ...steps.map(s => el('li', {}, s))));
+  }
+  if (tips.length) {
+    parts.push(el('h3', {}, 'Bon à savoir'));
+    parts.push(el('ul', { class: 'article-tips' }, ...tips.map(t => el('li', {}, t))));
+  }
+  if (faq.length) {
+    parts.push(el('h3', {}, 'Questions fréquentes'));
+    parts.push(el('div', { class: 'article-faq' },
+      ...faq.map(({ q, a }) => el('details', {}, el('summary', {}, q), el('p', {}, a)))));
+  }
+  return el('div', { class: 'panel article-panel' }, ...parts);
+}
+
 // Placeholder page for tools that are not available yet.
 export function backendNotice(what) {
   return status('⏳ ' + what + ' n\'est pas disponible pour le moment. Revenez bientôt !', 'info');
 }
+
