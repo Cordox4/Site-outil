@@ -1,4 +1,4 @@
-import { el, panel, field, button, dropzone, download, readFile, status, loadScript, bytes, backendNotice } from '../ui.js';
+import { el, panel, field, button, dropzone, download, readFile, status, loadScript, bytes, backendNotice, toolArticle } from '../ui.js';
 
 // Styles pour les nouveaux contrôles (grille de préréglages, cadre de recadrage)
 if (!document.getElementById('image-tools-extra-style')) {
@@ -99,6 +99,25 @@ export const tools = {
       });
       go.disabled = true;
       p.append(el('div', { class: 'btn-row' }, go), out);
+      root.append(toolArticle({
+        intro: [
+          'Une image trop lourde ralentit le chargement d\'un site web, prend inutilement de la place de stockage et complique l\'envoi par e-mail. Ce compresseur réduit le poids d\'une image en ajustant sa qualité JPEG, tout en gardant un rendu visuellement très proche de l\'original — l\'essentiel de la perte de qualité se joue sur des détails difficilement perceptibles à l\'œil nu.',
+          'Tout le traitement se fait dans votre navigateur via l\'API Canvas : votre image n\'est jamais envoyée sur un serveur externe.',
+        ],
+        steps: [
+          'Glissez-déposez votre image ou cliquez pour la sélectionner.',
+          'Choisissez le niveau de qualité souhaité (standard, bonne, haute ou maximale).',
+          'Cliquez sur "Compresser" : le fichier compressé se télécharge automatiquement.',
+        ],
+        tips: [
+          'Le niveau "Bonne qualité" (70 %) offre généralement le meilleur compromis entre poids de fichier et qualité visuelle pour un usage web.',
+          'Pour des photos destinées à l\'impression, préférez "Qualité maximale" afin de limiter la perte de détails.',
+        ],
+        faq: [
+          { q: 'Quelle est la différence entre ce compresseur et une conversion PNG → JPG ?', a: 'La conversion change le format du fichier, tandis que la compression ajuste le niveau de qualité JPEG pour réduire le poids sans forcément changer le format d\'origine (le résultat est toujours exporté en JPEG ici).' },
+          { q: 'Puis-je compresser une image PNG avec cet outil ?', a: 'Oui, l\'image est convertie en JPEG lors de la compression, ce qui réduit fortement son poids ; si vous devez conserver la transparence du PNG, utilisez plutôt l\'outil de redimensionnement, qui préserve le format d\'origine.' },
+        ],
+      }));
     },
   },
   'resize-image': {
@@ -152,6 +171,25 @@ export const tools = {
       });
       go.disabled = true;
       p.append(el('div', { class: 'btn-row' }, go), out);
+      root.append(toolArticle({
+        intro: [
+          'Redimensionner une image permet d\'adapter ses dimensions à un usage précis : format carré pour Instagram, bannière pour LinkedIn, miniature pour une vidéo YouTube, ou simplement réduire la taille d\'une photo avant de l\'envoyer par e-mail. Cet outil propose des préréglages prêts à l\'emploi pour les usages les plus courants, ainsi qu\'un mode personnalisé pour saisir vos propres dimensions.',
+          'Le traitement s\'effectue entièrement dans votre navigateur, l\'image d\'origine est redimensionnée sans jamais quitter votre appareil.',
+        ],
+        steps: [
+          'Importez votre image par glisser-déposer ou en cliquant sur la zone de dépôt.',
+          'Choisissez un format préréglé (réseaux sociaux, story, avatar…) ou sélectionnez "Personnalisé" pour saisir vos propres dimensions.',
+          'Cliquez sur "Redimensionner" pour télécharger l\'image à la nouvelle taille.',
+        ],
+        tips: [
+          'Laissez l\'option "Conserver les proportions" activée en mode personnalisé pour éviter de déformer votre image.',
+          'Pour publier sur les réseaux sociaux, utilisez le préréglage correspondant : chaque plateforme recadre ou compresse différemment les images qui ne respectent pas ses dimensions recommandées.',
+        ],
+        faq: [
+          { q: 'Le redimensionnement dégrade-t-il la qualité de l\'image ?', a: 'Réduire la taille d\'une image ne dégrade pas visiblement la qualité. En revanche, l\'agrandir au-delà de sa résolution d\'origine peut la rendre floue, car aucun détail supplémentaire n\'est inventé.' },
+          { q: 'Quel format de sortie est utilisé ?', a: 'L\'outil conserve le format d\'origine de votre image (PNG si l\'image de départ est un PNG, JPEG sinon), afin de préserver la transparence si elle existe.' },
+        ],
+      }));
     },
   },
   'crop-image': {
@@ -270,12 +308,66 @@ export const tools = {
       });
       go.disabled = true;
       p.append(el('div', { class: 'btn-row' }, go), out);
+      root.append(toolArticle({
+        intro: [
+          'Le recadrage permet d\'isoler la partie intéressante d\'une photo, de corriger un cadrage imparfait ou d\'adapter une image à un format précis (carré, portrait, écran large…). Cet outil affiche un cadre de sélection déplaçable et redimensionnable directement sur l\'image, avec des ratios prédéfinis pour les usages les plus courants.',
+        ],
+        steps: [
+          'Importez votre image.',
+          'Choisissez un ratio (carré, portrait, paysage, écran, story) ou laissez le mode "Libre" pour un recadrage sans contrainte.',
+          'Déplacez et redimensionnez le cadre à l\'aide des poignées, puis cliquez sur "Recadrer" pour télécharger le résultat.',
+        ],
+        tips: [
+          'Le ratio "9:16" (Story) est idéal pour Instagram et TikTok, tandis que "16:9" (Écran) convient aux miniatures YouTube et aux présentations.',
+          'Utilisez le mode "Libre" lorsque vous devez isoler un détail précis sans respecter un format standard.',
+        ],
+        faq: [
+          { q: 'Puis-je recadrer une image directement sur mobile ?', a: 'Oui, le cadre de recadrage répond au toucher aussi bien qu\'à la souris : vous pouvez le déplacer et le redimensionner du bout du doigt.' },
+          { q: 'Le recadrage réduit-il la résolution de l\'image ?', a: 'La résolution finale correspond à la taille réelle de la zone sélectionnée sur l\'image d\'origine : plus la zone recadrée est petite, plus l\'image obtenue aura une résolution basse.' },
+        ],
+      }));
     },
   },
-  ...convertTool('png-to-jpg', 'PNG → JPG', '🖼️', 'Convertissez un PNG en JPG.', 'image/jpeg', '.jpg'),
-  ...convertTool('jpg-to-png', 'JPG → PNG', '🖼️', 'Convertissez un JPG en PNG.', 'image/png', '.png'),
-  ...convertTool('webp-convert', 'Conversion WebP', '🖼️', 'Convertissez une image en WebP.', 'image/webp', '.webp'),
-  ...convertTool('avif-convert', 'Conversion AVIF', '🖼️', 'Convertissez une image en AVIF (selon le navigateur).', 'image/avif', '.avif'),
+  ...convertTool('png-to-jpg', 'PNG → JPG', '🖼️', 'Convertissez un PNG en JPG.', 'image/jpeg', '.jpg', {
+    intro: [
+      'PNG et JPG sont deux formats d\'image aux usages très différents. Le PNG utilise une compression sans perte et gère la transparence, ce qui le rend idéal pour les logos, captures d\'écran ou illustrations avec du texte, mais il produit des fichiers plus lourds sur des photos. Le JPG utilise une compression avec perte, beaucoup plus efficace pour les photographies, au prix d\'une transparence non gérée (l\'arrière-plan transparent devient blanc).',
+      'Convertir un PNG en JPG permet donc de réduire significativement le poids d\'une photo destinée au web, à condition de ne pas avoir besoin de transparence.',
+    ],
+    faq: [
+      { q: 'Que devient la transparence d\'un PNG après conversion en JPG ?', a: 'Le format JPG ne supporte pas la transparence : les zones transparentes du PNG d\'origine sont remplacées par un fond blanc lors de la conversion.' },
+      { q: 'La conversion réduit-elle beaucoup le poids du fichier ?', a: 'Oui, sur une photographie, un JPG est généralement plusieurs fois plus léger qu\'un PNG équivalent, grâce à sa compression avec perte optimisée pour les images complexes.' },
+    ],
+  }),
+  ...convertTool('jpg-to-png', 'JPG → PNG', '🖼️', 'Convertissez un JPG en PNG.', 'image/png', '.png', {
+    intro: [
+      'Convertir un JPG en PNG est utile lorsque vous devez ajouter de la transparence à une image (par exemple avant de la détourer dans un logiciel d\'édition), ou lorsqu\'un outil ou une plateforme exige spécifiquement ce format sans perte.',
+      'Attention : convertir un JPG en PNG n\'ajoute pas de transparence automatiquement et n\'améliore pas la qualité d\'origine — le PNG obtenu conserve fidèlement les pixels du JPG, sans les artefacts de compression supplémentaires que produirait un nouvel enregistrement en JPG.',
+    ],
+    faq: [
+      { q: 'Cette conversion améliore-t-elle la qualité de mon image ?', a: 'Non : la qualité d\'un JPG est fixée dès sa création. La conversion en PNG fige cette qualité dans un format sans perte, mais ne peut pas récupérer des détails déjà perdus lors de la compression JPEG initiale.' },
+      { q: 'Pourquoi le fichier PNG est-il plus lourd que le JPG d\'origine ?', a: 'Le PNG utilise une compression sans perte, généralement moins efficace que la compression JPEG sur des photographies, ce qui donne un fichier plus volumineux à qualité visuelle équivalente.' },
+    ],
+  }),
+  ...convertTool('webp-convert', 'Conversion WebP', '🖼️', 'Convertissez une image en WebP.', 'image/webp', '.webp', {
+    intro: [
+      'WebP est un format d\'image développé par Google, conçu spécifiquement pour le web. Il offre une compression plus efficace que le JPG et le PNG à qualité équivalente, ce qui réduit le poids des pages et améliore les temps de chargement — un critère pris en compte par Google dans le référencement d\'un site.',
+      'Ce format supporte à la fois la compression avec et sans perte, ainsi que la transparence, ce qui en fait une alternative polyvalente aux formats plus anciens.',
+    ],
+    faq: [
+      { q: 'Le format WebP est-il compatible avec tous les navigateurs ?', a: 'Oui, WebP est aujourd\'hui supporté par tous les navigateurs modernes (Chrome, Firefox, Safari, Edge). Pour les très anciens navigateurs, il est recommandé de conserver une version de secours en JPG ou PNG.' },
+      { q: 'Pourquoi utiliser WebP plutôt que JPG sur un site web ?', a: 'À qualité visuelle égale, un fichier WebP est généralement 25 à 35 % plus léger qu\'un JPG équivalent, ce qui accélère le chargement des pages.' },
+    ],
+  }),
+  ...convertTool('avif-convert', 'Conversion AVIF', '🖼️', 'Convertissez une image en AVIF (selon le navigateur).', 'image/avif', '.avif', {
+    intro: [
+      'AVIF est un format d\'image nouvelle génération, basé sur la technologie de compression vidéo AV1, qui permet d\'obtenir des fichiers encore plus légers que le WebP à qualité comparable. Il est de plus en plus utilisé pour optimiser les performances des sites web les plus exigeants.',
+      'Le support de l\'export AVIF dépend du navigateur utilisé : cet outil s\'appuie sur les capacités natives de votre navigateur pour générer le fichier, et vous informe si votre navigateur ne le prend pas en charge.',
+    ],
+    faq: [
+      { q: 'Pourquoi la conversion échoue-t-elle parfois ?', a: 'L\'export AVIF dépend du support natif du navigateur utilisé. Si la conversion échoue, essayez avec une version récente de Chrome ou Firefox, qui prennent en charge l\'encodage AVIF.' },
+      { q: 'AVIF remplace-t-il le WebP ?', a: 'AVIF offre généralement une meilleure compression que WebP, mais son support et ses outils d\'édition sont un peu moins répandus. Le choix dépend souvent de la compatibilité requise pour votre projet.' },
+    ],
+  }),
 
   'watermark-image': {
     name: 'Filigrane image', icon: '💧', desc: 'Ajoutez un filigrane répété sur toute l\'image.', cat: 'image',
@@ -316,6 +408,24 @@ export const tools = {
       });
       go.disabled = true;
       p.append(el('div', { class: 'btn-row' }, go), out);
+      root.append(toolArticle({
+        intro: [
+          'Ajouter un filigrane (watermark) à une image permet de protéger vos photos ou créations contre une réutilisation non autorisée, tout en signant visuellement votre travail. Cet outil applique un texte personnalisé en filigrane répété sur toute la surface de l\'image, ce qui rend son retrait bien plus difficile qu\'un filigrane unique placé dans un coin.',
+        ],
+        steps: [
+          'Importez l\'image à protéger.',
+          'Saisissez le texte du filigrane (par exemple votre nom, votre marque ou une mention de droits d\'auteur).',
+          'Ajustez l\'opacité et la couleur pour un rendu discret ou marqué, puis cliquez sur "Appliquer le filigrane".',
+        ],
+        tips: [
+          'Une opacité basse (10 à 20 %) protège l\'image tout en restant discrète ; une opacité plus élevée dissuade davantage toute réutilisation.',
+          'Choisissez une couleur qui contraste avec votre image (blanc sur une photo sombre, noir sur une photo claire) pour que le filigrane reste lisible.',
+        ],
+        faq: [
+          { q: 'Le filigrane peut-il être facilement retiré ?', a: 'Parce qu\'il est répété plusieurs fois sur toute l\'image, ce filigrane est nettement plus difficile à effacer qu\'un filigrane unique placé dans un coin, mais aucun filigrane n\'offre une protection absolue.' },
+          { q: 'Puis-je utiliser un logo au lieu de texte ?', a: 'Cet outil fonctionne uniquement avec du texte. Pour un filigrane sous forme de logo ou d\'image, un logiciel d\'édition d\'image sera nécessaire.' },
+        ],
+      }));
     },
   },
 
@@ -338,6 +448,25 @@ export const tools = {
       });
       go.disabled = true;
       p.append(el('div', { class: 'btn-row' }, go), out, field('Résultat', result));
+      root.append(toolArticle({
+        intro: [
+          'L\'OCR (reconnaissance optique de caractères) permet d\'extraire le texte contenu dans une image — capture d\'écran, photo de document, panneau photographié — pour le récupérer sous forme de texte modifiable et copiable. Cet outil s\'appuie sur Tesseract.js, un moteur de reconnaissance de texte open source reconnu, capable de lire aussi bien le français que l\'anglais.',
+          'Le traitement se fait directement dans votre navigateur après le chargement du moteur OCR (quelques mégaoctets la première fois), sans envoi de votre image vers un serveur.',
+        ],
+        steps: [
+          'Importez l\'image contenant le texte à extraire.',
+          'Cliquez sur "Extraire le texte" et patientez pendant l\'analyse (la progression s\'affiche en pourcentage).',
+          'Le texte reconnu apparaît dans la zone de résultat, prêt à être copié.',
+        ],
+        tips: [
+          'Pour un meilleur résultat, utilisez une image nette, bien cadrée et avec un bon contraste entre le texte et l\'arrière-plan.',
+          'Une écriture manuscrite ou une police très stylisée est généralement moins bien reconnue qu\'un texte imprimé standard.',
+        ],
+        faq: [
+          { q: 'L\'OCR fonctionne-t-il avec des langues autres que le français et l\'anglais ?', a: 'Cet outil est configuré pour reconnaître le français et l\'anglais simultanément, ce qui couvre la majorité des cas d\'usage courants.' },
+          { q: 'Pourquoi la première extraction est-elle plus lente ?', a: 'Le moteur de reconnaissance (quelques mégaoctets) doit être téléchargé une première fois par votre navigateur ; les extractions suivantes démarrent plus rapidement.' },
+        ],
+      }));
     },
   },
 
@@ -366,11 +495,30 @@ export const tools = {
       });
       go.disabled = true;
       p.append(el('div', { class: 'btn-row' }, go), out);
+      root.append(toolArticle({
+        intro: [
+          'Les métadonnées EXIF sont des informations techniques enregistrées automatiquement par un appareil photo ou un smartphone au moment de la prise de vue : modèle de l\'appareil, réglages (ouverture, vitesse, ISO), date et heure, et parfois les coordonnées GPS du lieu de la photo. Cet outil affiche l\'ensemble de ces métadonnées lisibles dans un fichier image.',
+          'Consulter ces informations est utile pour un photographe souhaitant analyser ses réglages, mais aussi pour vérifier quelles données personnelles (comme la localisation) sont potentiellement partagées avant de publier une photo en ligne.',
+        ],
+        steps: [
+          'Importez la photo dont vous souhaitez consulter les métadonnées.',
+          'Cliquez sur "Lire les métadonnées".',
+          'Le tableau des informations disponibles s\'affiche (appareil, réglages, date, position GPS si présente…).',
+        ],
+        tips: [
+          'Si vous partagez une photo publiquement, vérifiez la présence de coordonnées GPS dans les métadonnées : de nombreux réseaux sociaux les suppriment automatiquement, mais pas tous les moyens de partage (e-mail, messagerie).',
+          'Certaines images (captures d\'écran, images déjà partagées sur les réseaux sociaux) ne contiennent aucune métadonnée EXIF, car elle a été supprimée lors d\'un traitement précédent.',
+        ],
+        faq: [
+          { q: 'Pourquoi certaines photos n\'ont aucune métadonnée ?', a: 'Les réseaux sociaux et certains outils d\'édition suppriment automatiquement les métadonnées EXIF lors de l\'enregistrement ou de la publication d\'une image, notamment pour protéger la vie privée des utilisateurs.' },
+          { q: 'Cet outil modifie-t-il ou supprime-t-il les métadonnées ?', a: 'Non, cet outil se contente de lire et d\'afficher les métadonnées existantes ; il ne modifie pas le fichier original.' },
+        ],
+      }));
     },
   },
 };
 
-function convertTool(id, name, icon, desc, type, ext) {
+function convertTool(id, name, icon, desc, type, ext, article) {
   return {
     [id]: {
       name, icon, desc, cat: 'image',
@@ -388,6 +536,7 @@ function convertTool(id, name, icon, desc, type, ext) {
         });
         go.disabled = true;
         p.append(el('div', { class: 'btn-row' }, go), out);
+        if (article) root.append(toolArticle({ title: name, ...article }));
       },
     },
   };
