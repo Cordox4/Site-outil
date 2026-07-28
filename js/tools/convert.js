@@ -7,11 +7,13 @@ const UNITS = {
   Surface: { 'm²': 1, 'km²': 1e6, ha: 1e4, 'cm²': 1e-4, acre: 4046.86, 'ft²': 0.092903 },
   Vitesse: { 'm/s': 1, 'km/h': 0.277778, mph: 0.44704, nœud: 0.514444 },
   Données: { o: 1, Ko: 1024, Mo: 1024 ** 2, Go: 1024 ** 3, To: 1024 ** 4 },
+  Débit: { 'bit/s': 1, 'Kbit/s': 1000, 'Mbit/s': 1e6, 'Gbit/s': 1e9, 'o/s': 8, 'Ko/s': 8 * 1024, 'Mo/s': 8 * 1024 ** 2, 'Go/s': 8 * 1024 ** 3 },
+  'Concentration molaire': { 'mol/L': 1, 'mmol/L': 0.001, 'µmol/L': 1e-6, 'nmol/L': 1e-9, 'pmol/L': 1e-12 },
 };
 
 export const tools = {
   'unit-converter': {
-    name: 'Convertisseur d\'unités', icon: 'ruler', desc: 'Longueur, poids, volume, surface, vitesse, données.', cat: 'convert',
+    name: 'Convertisseur d\'unités', icon: 'ruler', desc: 'Longueur, poids, volume, surface, vitesse, données, débit, concentration.', cat: 'convert',
     render(root) {
       const p = panel(); root.append(p);
       const cat = el('select', {}, ...Object.keys(UNITS).map(k => el('option', {}, k)));
@@ -30,21 +32,23 @@ export const tools = {
       fillUnits(); upd();
       root.append(toolArticle({
         intro: [
-          'Ce convertisseur d\'unités regroupe six catégories parmi les plus utilisées au quotidien : longueur, poids, volume, surface, vitesse et données numériques (octets, kilo-octets, méga-octets…). Il permet de passer d\'une unité à une autre instantanément, sans avoir à mémoriser les formules de conversion.',
-          'Que vous ayez besoin de convertir des kilomètres en miles pour un voyage, des livres en kilogrammes pour une recette, ou des gigaoctets en mégaoctets pour du stockage informatique, l\'outil s\'adapte à chaque cas grâce à ses six catégories.',
+          'Ce convertisseur d\'unités regroupe huit catégories parmi les plus utiles au quotidien comme en contexte scientifique : longueur, poids, volume, surface, vitesse, données numériques (octets, kilo-octets, méga-octets…), débit binaire (bit/s, Mbit/s…) et concentration molaire (mol/L, mmol/L…). Il permet de passer d\'une unité à une autre instantanément, sans avoir à mémoriser les formules de conversion.',
+          'Que vous ayez besoin de convertir des kilomètres en miles pour un voyage, des livres en kilogrammes pour une recette, un débit internet annoncé en Mbit/s vers une vitesse de téléchargement en Mo/s, ou une concentration en mmol/L vers du mol/L pour un protocole de laboratoire, l\'outil s\'adapte à chaque cas grâce à ses huit catégories.',
         ],
         steps: [
-          'Choisissez la catégorie d\'unités à convertir (longueur, poids, volume…).',
+          'Choisissez la catégorie d\'unités à convertir (longueur, poids, volume, débit, concentration…).',
           'Sélectionnez l\'unité de départ et l\'unité d\'arrivée.',
           'Saisissez la valeur à convertir : le résultat se met à jour automatiquement.',
         ],
         tips: [
           'Pour les unités de données, l\'outil utilise la convention binaire (1 Ko = 1024 o), qui correspond à ce qu\'affichent la plupart des systèmes d\'exploitation.',
+          'Attention à ne pas confondre débit et données : les fournisseurs d\'accès annoncent leurs offres en mégabits par seconde (Mbit/s), alors que la taille des fichiers et la vitesse de téléchargement affichée par le navigateur sont en méga-octets (Mo/s) — 1 Mo/s correspond à 8 Mbit/s.',
           'Vous pouvez inverser rapidement une conversion en intervertissant les unités "De" et "Vers".',
         ],
         faq: [
           { q: 'Combien y a-t-il de kilomètres dans un mile ?', a: 'Un mile équivaut à environ 1,60934 kilomètre. L\'outil applique ce facteur de conversion automatiquement dans la catégorie Longueur.' },
           { q: 'Pourquoi mes gigaoctets ne correspondent pas exactement à ce qu\'affiche mon disque dur ?', a: 'Les fabricants de disques durs utilisent parfois la convention décimale (1 Go = 1 000 000 000 o) alors que les systèmes d\'exploitation utilisent la convention binaire (1 Go = 1024³ o), ce qui explique un léger écart d\'affichage.' },
+          { q: 'Pourquoi une offre internet à 100 Mbit/s ne télécharge pas à 100 Mo par seconde ?', a: 'Parce qu\'un octet contient 8 bits : une connexion à 100 Mbit/s correspond à un débit maximal théorique d\'environ 12,5 Mo/s, avant même de tenir compte des pertes réseau habituelles.' },
         ],
       }));
     },
@@ -157,6 +161,69 @@ export const tools = {
         faq: [
           { q: 'Pourquoi certaines villes affichent-elles un décalage inhabituel ?', a: 'Certains pays utilisent des décalages horaires non entiers (par exemple +5h30 pour l\'Inde) ou ne pratiquent pas le changement d\'heure été/hiver, ce qui peut donner des écarts différents de ceux auxquels on s\'attend.' },
           { q: 'L\'heure affichée est-elle celle de mon appareil ou celle du serveur ?', a: 'Elle est calculée à partir de l\'horloge de votre appareil, convertie pour chaque fuseau horaire affiché : aucune donnée n\'est envoyée à un serveur.' },
+        ],
+      }));
+    },
+  },
+  'dilution-calculator': {
+    name: 'Calculateur de dilution', icon: 'flask', desc: 'Résolvez C1V1 = C2V2 pour vos dilutions de laboratoire.', cat: 'convert',
+    render(root) {
+      const p = panel(); root.append(p);
+      const c1 = el('input', { type: 'number', value: '10' });
+      const v1 = el('input', { type: 'number', value: '' });
+      const c2 = el('input', { type: 'number', value: '1' });
+      const v2 = el('input', { type: 'number', value: '100' });
+      const inputs = { c1, v1, c2, v2 };
+      const target = el('select', {},
+        el('option', { value: 'v1' }, 'V1 (volume de la solution mère à prélever)'),
+        el('option', { value: 'c1' }, 'C1 (concentration de la solution mère)'),
+        el('option', { value: 'v2' }, 'V2 (volume final souhaité)'),
+        el('option', { value: 'c2' }, 'C2 (concentration finale souhaitée)'),
+      );
+      const st = el('div');
+      const setReadonly = () => {
+        Object.entries(inputs).forEach(([k, inp]) => { inp.readOnly = k === target.value; inp.classList.toggle('computed', k === target.value); });
+      };
+      const compute = () => {
+        st.innerHTML = '';
+        const n = { c1: +c1.value, v1: +v1.value, c2: +c2.value, v2: +v2.value };
+        try {
+          switch (target.value) {
+            case 'v1': if (!n.c1) throw 0; v1.value = (n.c2 * n.v2 / n.c1).toLocaleString('fr-FR', { maximumFractionDigits: 6 }); break;
+            case 'c1': if (!n.v1) throw 0; c1.value = (n.c2 * n.v2 / n.v1).toLocaleString('fr-FR', { maximumFractionDigits: 6 }); break;
+            case 'v2': if (!n.c2) throw 0; v2.value = (n.c1 * n.v1 / n.c2).toLocaleString('fr-FR', { maximumFractionDigits: 6 }); break;
+            case 'c2': if (!n.v2) throw 0; c2.value = (n.c1 * n.v1 / n.v2).toLocaleString('fr-FR', { maximumFractionDigits: 6 }); break;
+          }
+          st.append(status('C1 × V1 = C2 × V2 — le champ grisé est calculé automatiquement.', 'ok'));
+        } catch (e) { st.append(status('Renseignez les trois autres champs (valeur non nulle) pour calculer celui-ci.', 'err')); }
+      };
+      target.addEventListener('change', () => { setReadonly(); compute(); });
+      [c1, v1, c2, v2].forEach(inp => inp.addEventListener('input', compute));
+      setReadonly();
+      p.append(
+        field('Champ à calculer', target),
+        el('div', { class: 'row' }, field('C1 — concentration mère', c1), field('V1 — volume à prélever', v1)),
+        el('div', { class: 'row' }, field('C2 — concentration finale', c2), field('V2 — volume final', v2)),
+        st,
+      );
+      compute();
+      root.append(toolArticle({
+        intro: [
+          'Ce calculateur applique la formule de dilution C1 × V1 = C2 × V2, utilisée en chimie, en biologie et en pharmacie pour préparer une solution diluée à partir d\'une solution mère plus concentrée. C1 et C2 représentent les concentrations (avant et après dilution), V1 et V2 les volumes correspondants.',
+          'Choisissez la grandeur que vous cherchez à déterminer (le plus souvent V1, le volume de solution mère à prélever), renseignez les trois autres valeurs connues, et le résultat se calcule automatiquement.',
+        ],
+        steps: [
+          'Sélectionnez dans le menu la grandeur inconnue que vous voulez calculer (C1, V1, C2 ou V2).',
+          'Renseignez les trois autres valeurs : le champ correspondant à votre choix est calculé automatiquement.',
+          'Veillez à exprimer C1 et C2 dans la même unité, et V1 et V2 dans la même unité, pour que le résultat soit cohérent.',
+        ],
+        tips: [
+          'Pour convertir vos concentrations entre mol/L, mmol/L ou µmol/L avant de les utiliser ici, le convertisseur d\'unités propose une catégorie "Concentration molaire" dédiée.',
+          'Le résultat garde l\'unité que vous avez utilisée pour les valeurs saisies : si C1 et C2 sont en mmol/L et V1, V2 en mL, le résultat sera cohérent dans ces mêmes unités.',
+        ],
+        faq: [
+          { q: 'Que signifie C1V1 = C2V2 ?', a: 'Cette égalité traduit le fait que la quantité de matière (ou de soluté) reste identique avant et après dilution : seule la concentration change, car on ajoute du solvant pour augmenter le volume.' },
+          { q: 'Puis-je utiliser ce calculateur avec des unités différentes pour C1 et C2 ?', a: 'Non : C1 et C2 doivent être exprimées dans la même unité (par exemple toutes les deux en mol/L), tout comme V1 et V2 doivent partager la même unité de volume, sinon le résultat ne sera pas correct.' },
         ],
       }));
     },
